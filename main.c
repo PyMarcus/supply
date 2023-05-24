@@ -3,15 +3,10 @@
 
 
 /*
- * Programa para treinar a manipulação de arquivos em C
+ * freela de manipulacao de arquivos em C [em progresso]
  * Receber quantidade de produtos
  * Manipular conforme os comandos passados, esta lista de produtos.
  * */
-
-
-struct content{
-    char text[100];
-};
 
 
 
@@ -43,7 +38,7 @@ int readFile(char *filePath, int row)
     FILE *_file_ = fopen(filePath, "r");
     FILE *file = fopen(filePath, "r");
     int lines = getLines(_file_);
-    struct content phrases[lines];
+    char phrases[lines][100];
 
     // se o local do arquivo estiver incorreto, retorna mensagem de nao encontrado
     if(file == NULL)
@@ -57,7 +52,7 @@ int readFile(char *filePath, int row)
     while(fread (&rows, sizeof(char), 1, file)) {
         if(rows == '\n') {
             // copia a string formada para cada index do array
-            strcpy(phrases[count].text, store);
+            strcpy(phrases[count], store);
             // reseta string
             strcpy(store, "");
             count++;
@@ -67,6 +62,12 @@ int readFile(char *filePath, int row)
         // concatena os caracteres para formar a linha completa
         strcat(store, convert);
     }
+
+    for(int i = 0; i < lines; i++)
+    {
+        printf("%s", phrases[i]);
+    }
+
 
     fclose(file);
     return 0;
