@@ -1,83 +1,77 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 
-/*
- * freela de manipulacao de arquivos em C [em progresso]
- * Receber quantidade de produtos
- * Manipular conforme os comandos passados, esta lista de produtos.
- * */
+struct Product {
+    int code;
+    int amount;
+    float price;
+    char name[200];
+    char state[2];
+};
 
 
-
-/*obtem a quantidade de linhas do arquivo*/
-int getLines(FILE *file)
-{
-
-    int count = 0;
-    char rows;
-
-    while(fread (&rows, sizeof(char), 1, file))
-    {
-        if(rows == '\n'){
-            count++;
-        }
-    }
-    return count;
-}
+int readFile(char *filePath, int size) {
+    FILE *file;
+    char lines[200];
+    struct Product products[5 * size];
+    int index = 0;
+    int counter = 0;
 
 
-/* função que le o arquivo determinado.*/
-int readFile(char *filePath, int row)
-{
-    char rows;
-    char convert[2];
-    int MAX_COLUMNS = 1000;
-    char store[MAX_COLUMNS];
-    int count = 0;
-    FILE *_file_ = fopen(filePath, "r");
-    FILE *file = fopen(filePath, "r");
-    int lines = getLines(_file_);
-    char phrases[lines][100];
-
-    // se o local do arquivo estiver incorreto, retorna mensagem de nao encontrado
-    if(file == NULL)
-    {
-        printf("[-]file not found!\n", stderr);
+    // abre arquivo, em caso de erro, termina execucao
+    file = fopen(filePath, "r");
+    if (file == NULL) {
+        printf("ERRO ao abrir arquivo.Possivelmente, caminho incorreto\n");
         return 1;
     }
 
+    // le arquivo e salva os dados na estrutura products
+    while (fgets(lines, 200, file) != NULL) {
+        // Remover o caractere de nova linha (\n) do final da linha
+        lines[strcspn(lines, "\n")] = '\0';
 
-    // le arquivo:
-    while(fread (&rows, sizeof(char), 1, file)) {
-        if(rows == '\n') {
-            // copia a string formada para cada index do array
-            strcpy(phrases[count], store);
-            // reseta string
-            strcpy(store, "");
-            count++;
+        switch (counter % 5) {
+            case 0:
+                products[index].code = atoi(lines);
+                break;
+            case 1:
+                strcpy(products[index].name, lines);
+                break;
+            case 2:
+                products[index].amount = atoi(lines);
+                break;
+            case 3:
+                products[index].price = atof(lines);
+                break;
+            case 4:
+                strcpy(products[index].state, lines);
+                index++;
+                break;
         }
-        convert[0] = rows;
-        convert[1] = '\0';
-        // concatena os caracteres para formar a linha completa
-        strcat(store, convert);
-    }
 
-    for(int i = 0; i < lines; i++)
-    {
-        printf("%s", phrases[i]);
+        counter++;
     }
-
 
     fclose(file);
+
+    // Exemplo de uso dos dados armazenados na struct
+    for (int j = 0; j < size; j++) {
+        printf("Dados %d:\n", j + 1);
+        printf("Codigo: %d\n", products[j].code);
+        printf("Nome: %s\n", products[j].name);
+        printf("Quantidade: %d\n", products[j].amount);
+        printf("Preco: %.2f\n", products[j].price);
+        printf("Estado: %s\n", products[j].state);
+        printf("\n");
+    }
+
     return 0;
 }
 
 
-int main(int argc, char *argv[]) {
-
+int main(int argc, char *argv[]){
     readFile("C:\\Users\\Marcu\\CLionProjects\\supply\\input.txt", 1);
-
-
     return 0;
 }
