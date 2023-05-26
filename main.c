@@ -13,7 +13,7 @@ struct Product {
 
 
 // visualiza array de produtos, se necessario.
-void viewProducts(struct Product products, int size){
+void viewProducts(struct Product *products, int size){
     for (int j = 0; j < size; j++) {
         printf("Dados %d:\n", j + 1);
         printf("Codigo: %d\n", products[j].code);
@@ -69,7 +69,6 @@ int readFile(char *filePath, int size) {
     }
 
     fclose(file);
-
     return 0;
 }
 
