@@ -26,9 +26,32 @@ void viewProducts(struct Product *products, int size){
 }
 
 
+void writeFile(struct Product *products, int size, char *fileName){
+    FILE *file;
+    char intToString[10];
+    char floatToString[10];
+    file = fopen(fileName, "w");
+    for(int seek = 0; seek < size; seek++){
+        sprintf(intToString, "%d", products[seek].code);   // converte de int para str
+        sprintf(floatToString, "%f", products[seek].code);   // converte de float para str
+        fprintf(file , intToString);
+        fprintf(file , "\n");
+        fprintf(file, products[seek].name);
+        fprintf(file , "\n");
+        sprintf(intToString, "%d", products[seek].amount);   // converte de int para str
+        fprintf(file, intToString);
+        fprintf(file , "\n");
+        fprintf(file, floatToString);
+        fprintf(file , "\n");
+        fprintf(file, products[seek].state);
+        fprintf(file , "\n");
+    }
+    fclose(file);
+}
+
 
 // gera um relatorio, com os nomes em ordem alfabetica
-void createReport(struct Product *products, int size){
+void createReport(struct Product *products, int size, char *fileName){
     for(int product = 0; product < size - 1; product++){
         for(int _product = 0; _product < size - 1; _product++){
             // se a ordem lexicografica de x > x+1, entao substitui x por x+1
@@ -39,22 +62,23 @@ void createReport(struct Product *products, int size){
             }
         }
     }
+    writeFile(products, size, fileName);
     viewProducts(products, size);
 }
 
 
 // chama a funcao com base na escolha do usuario
-void select(struct Product *products, int size,  int option){
+void select(struct Product *products, int size,  int option, char *fileName){
     switch (option) {
         case 1:
-            createReport(products, size);
+            createReport(products, size, fileName);
             break;
     }
 }
 
 
 // abre e le arquivo
-int readFile(char *filePath, int size, int option) {
+int readFile(char *filePath, int size, int option, char *fileName) {
     FILE *file;
     char lines[200];
     struct Product products[5 * size];
@@ -96,7 +120,7 @@ int readFile(char *filePath, int size, int option) {
     }
 
     fclose(file);
-    select(products, size, option);
+    select(products, size, option, fileName);
     return 0;
 }
 
@@ -104,27 +128,28 @@ int readFile(char *filePath, int size, int option) {
 // trata a linha de comandos
 void argparser(int argc, char *argv[], int size){
     if(strcmp(argv[2], "1") == 0) {
-        readFile(argv[1], size, 1);
+        readFile(argv[1], size, 1, argv[3]);
     }
     else if(strcmp(argv[2], "2") == 0){
-        readFile(argv[1], size, 2);
+        readFile(argv[1], size, 2, NULL);
     }
     else if(strcmp(argv[2], "3") == 0){
-        readFile(argv[1], size, 3);
+        readFile(argv[1], size, 3, NULL);
     }
     else if(strcmp(argv[2], "4") == 0){
-        readFile(argv[1], size, 4);
+        readFile(argv[1], size, 4, NULL);
     }
     else if(strcmp(argv[2], "5") == 0){
-        readFile(argv[1], size, 5);
+        readFile(argv[1], size, 5, NULL);
     }
     else if(strcmp(argv[2], "6") == 0){
-        readFile(argv[1], size, 6);
+        readFile(argv[1], size, 6, NULL);
     }
     else{
         printf("Opcao invalida! %s", argv[2]);
     }
 }
+
 
 int main(int argc, char *argv[]){
 
