@@ -12,6 +12,20 @@ struct Product {
 };
 
 
+// visualiza array de produtos, se necessario.
+void viewProducts(struct Product products, int size){
+    for (int j = 0; j < size; j++) {
+        printf("Dados %d:\n", j + 1);
+        printf("Codigo: %d\n", products[j].code);
+        printf("Nome: %s\n", products[j].name);
+        printf("Quantidade: %d\n", products[j].amount);
+        printf("Preco: %.2f\n", products[j].price);
+        printf("Estado: %s\n", products[j].state);
+        printf("\n");
+    }
+}
+
+
 int readFile(char *filePath, int size) {
     FILE *file;
     char lines[200];
@@ -55,17 +69,6 @@ int readFile(char *filePath, int size) {
     }
 
     fclose(file);
-
-    // Exemplo de uso dos dados armazenados na struct
-    for (int j = 0; j < size; j++) {
-        printf("Dados %d:\n", j + 1);
-        printf("Codigo: %d\n", products[j].code);
-        printf("Nome: %s\n", products[j].name);
-        printf("Quantidade: %d\n", products[j].amount);
-        printf("Preco: %.2f\n", products[j].price);
-        printf("Estado: %s\n", products[j].state);
-        printf("\n");
-    }
 
     return 0;
 }
