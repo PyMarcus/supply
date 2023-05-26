@@ -26,6 +26,7 @@ void viewProducts(struct Product *products, int size){
 }
 
 
+// abre e le arquivo
 int readFile(char *filePath, int size) {
     FILE *file;
     char lines[200];
@@ -73,7 +74,26 @@ int readFile(char *filePath, int size) {
 }
 
 
+// trata a linha de comandos
+void argparser(int argc, char *argv[]){
+    for(int command = 0; command < argc; command++){
+
+    }
+}
+
 int main(int argc, char *argv[]){
-    readFile("C:\\Users\\Marcu\\CLionProjects\\supply\\input.txt", 1);
+
+    /*
+     *
+     * Objetivo deste trabalho é fazer
+     * a gestão simples de um mercado
+     *
+     * A entrada de dados é baseada em
+     * arquivo e deve-se usar uma estrutura para
+     * manipular os produtos conforme solicitado
+     * pelo professor.
+     *
+     * */
+    argparser(argc, argv);
     return 0;
 }
