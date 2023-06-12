@@ -35,28 +35,40 @@ void viewProduct(struct Product product){
         printf("%s\n", product.state);
 }
 
-void writeFile(struct Product *products, int size, char *fileName){
+
+void writeFile(struct Product *products, int size, char *fileName) {
     FILE *file;
     char intToString[10];
     char floatToString[10];
     file = fopen(fileName, "w");
-    for(int seek = 0; seek < size; seek++){
-        sprintf(intToString, "%d", products[seek].code);   // converte de int para str
-        sprintf(floatToString, "%f", products[seek].code);   // converte de float para str
-        fprintf(file , intToString);
-        fprintf(file , "\n");
-        fprintf(file, products[seek].name);
-        fprintf(file , "\n");
-        sprintf(intToString, "%d", products[seek].amount);   // converte de int para str
-        fprintf(file, intToString);
-        fprintf(file , "\n");
-        fprintf(file, floatToString);
-        fprintf(file , "\n");
-        fprintf(file, products[seek].state);
-        fprintf(file , "\n");
+
+    if (file != NULL) {
+        for (int seek = 0; seek < size; seek++) {
+            fseek(file, 0, SEEK_END); // Move para o final do arquivo
+
+            sprintf(intToString, "%d", products[seek].code);   // converte de int para str
+            fputs(intToString, file);
+            fputs("\n", file);
+
+            fputs(products[seek].name, file);
+            fputs("\n", file);
+
+            sprintf(intToString, "%d", products[seek].amount);   // converte de int para str
+            fputs(intToString, file);
+            fputs("\n", file);
+
+            sprintf(floatToString, "%.2f", products[seek].price);   // converte de float para str
+            fputs(floatToString, file);
+            fputs("\n", file);
+
+            fputs(products[seek].state, file);
+            fputs("\n", file);
+        }
+
+        fclose(file);
     }
-    fclose(file);
 }
+
 
 
 // gera um relatorio, com os nomes em ordem alfabetica
@@ -72,7 +84,7 @@ void createReport(struct Product *products, int size, char *fileName){
         }
     }
     writeFile(products, size, fileName);
-    viewProducts(products, size);
+    //viewProducts(products, size);
 }
 
 
@@ -160,12 +172,12 @@ void totalPrice(struct Product *products, int size){
     int total = 0;
     float sum = 0;
 
-    for(int i = 0; i < size - 1; i++){
+    for(int i = 0; i < size; i++){
         total += products[i].amount;
         sum += (products[i].price * products[i].amount);
     }
     printf("%d\n", total);
-    printf("%.2f\n", sum);
+    //printf("%.2f\n", sum);
 }
 
 
@@ -243,7 +255,7 @@ int readFile(char *filePath, int size, int option, char *fileName, int code, cha
 
 
 // trata a linha de comandos
-void argparser(int argc, char *argv[], int size){
+void argparser(int argc, char argv[][200], int size){
     if(strcmp(argv[2], "1") == 0) {
         readFile(argv[1], size, 1, argv[3], -1, "MG");
     }
@@ -268,33 +280,35 @@ void argparser(int argc, char *argv[], int size){
 }
 
 
-int main(int argc, char *argv[]){
+#define MAX_WORDS 4
+#define MAX_LENGTH 200
 
-    /*
-     *
-     * O objetivo deste trabalho é fazer
-     * a gestão simples de um mercado
-     *
-     * A entrada de dados é baseada em
-     * arquivo e deve-se usar uma estrutura para
-     * manipular os produtos conforme solicitado
-     * pelo professor.
-     *
-     * */
+
+int main() {
     int input;
+    int arg_count;
+    char arg_values[MAX_WORDS][MAX_LENGTH];
+
     scanf("%d", &input);
-    if(argc > 1){
-        argparser(argc, argv, input);
-    }else{
-        printf("Use .\\main.c [opcoes]");
-        printf("Opcoes:\n");
-        printf("1. Gerar relatorio de estoque\n"
-               "2. Pesquisar por produto pelo codigo\n"
-               "3. Listar dados do produto com menor quantidade em estoque\n"
-               "4. Listar produtos por estado\n"
-               "5. Encontrar produto com menor quantidade em estoque do estado\n"
-               "6. Calcular a quantidade total de itens no estoque ");
+
+    // Limpar o buffer de entrada após scanf
+    while (getchar() != '\n');
+
+    fgets(arg_values[0], sizeof(arg_values[0]), stdin);
+
+    // Remover o caractere de nova linha do final da string
+    arg_values[0][strcspn(arg_values[0], "\n")] = '\0';
+
+    // Processar a linha para obter as palavras separadas
+    char *token = strtok(arg_values[0], " ");
+    int i = 0;
+    while (token != NULL && i < MAX_WORDS) {
+        strcpy(arg_values[i], token);
+        token = strtok(NULL, " ");
+        i++;
     }
+
+    argparser(arg_count, arg_values, input);
 
     return 0;
 }
